@@ -1,7 +1,6 @@
-﻿@page "/"
+@page "/expediente"
 @using FrontEnd.Data
 @using System.ComponentModel.DataAnnotations
-@inject WeatherForecastClient ForecastClient
 @code {
     //private Aspirante aspirante = new Aspirante();
     private Aspirante aspirante = new Aspirante { FechaNacimiento = DateTime.Now };
@@ -27,6 +26,10 @@
 
         [Required]
         public string Carrera { get; set; }
+        [Required]
+        public string Estado { get; set; }
+
+        public string? Genero { get; set; }
     }
 
 }
@@ -34,7 +37,7 @@
 
 <PageTitle>Weather forecast</PageTitle>
 
-<h1>Bienvenidos a UMI/Universidad Coppel</h1>
+<h1>Expediente</h1>
 
 <EditForm Model="aspirante" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
@@ -57,6 +60,23 @@
     <option value="Ingeniería">Ingeniería</option>
     <option value="Licenciatura">Licenciatura</option>
 </InputSelect>    
+</div>
+   <div class="form-group">
+        <label for="estado">Estado:</label>
+        <InputSelect id="estado" class="form-control" @bind-Value="aspirante.Estado">
+            <option value="">Selecciona un estado</option>
+            @foreach (var state in new string[] { "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua", "Coahuila", "Colima", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas" })
+            {
+                <option value="@state">@state</option>
+            }
+        </InputSelect>
+    </div>
+<div class="form-group">
+    <label>Género:</label>
+    <InputRadioGroup @bind-Value="aspirante.Genero">
+        <InputRadio id="masculino" TValue="string" value="Masculino" /> Masculino
+        <InputRadio id="femenino" TValue="string" value="Femenino" /> Femenino
+    </InputRadioGroup>
 </div>
 <button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px;">Guardar</button>
 

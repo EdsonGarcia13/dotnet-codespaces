@@ -24,17 +24,7 @@ You can also run this repository locally by following these instructions:
 
 ![](images/RunAll.png)
 
-3. The Blazor web app and Swagger tabs should now be open on your browser. On Swagger, click "Try it out" and "Execute" to call and test the API. 
 
-![](images/BlazorApp.png)
-![](images/Swagger.png)
-
-
-4. **🔄 Iterate quickly:** Codespaces updates the server on each save, and VS Code's debugger lets you dig into the code execution.
-
-5. To stop running, return to VS Code, and click Stop twice in the debug toolbar. 
-
-![](images/StopRun.png)
 
 
 ## Contributing

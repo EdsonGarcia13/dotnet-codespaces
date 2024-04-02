@@ -1,0 +1,73 @@
+@page "/operations"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+
+<PageTitle>Saludo</PageTitle>
+
+    
+    @for (var i = 0; i < 6; i++)
+    {
+        var index = i; 
+        <div class="form-group" style="margin-top: 20px;">
+            <label>Número @(index + 1)</label>
+            <InputNumber class="form-control" @bind-Value="operaciones.Numeros[index]" />
+        </div>
+    }
+
+    <div class="form-group">
+        <label>Resultado</label>
+        <InputText class="form-control" @bind-Value="operaciones.Resultado" readonly />
+    </div>
+
+    <button type="button" class="btn btn-primary" style="margin-top: 20px;" @onclick="() => Sumar()">Suma</button>
+    <button type="button" class="btn btn-primary" style="margin-top: 20px;" @onclick="() => Restar()">Resta</button>
+    <button type="button" class="btn btn-primary" style="margin-top: 20px;" @onclick="() => Multiplicar()">Multiplicación</button>
+    <button type="button" class="btn btn-primary" style="margin-top: 20px;" @onclick="() => Dividir()">División</button> 
+    <button type="button" class="btn btn-secondary" style="margin-top: 20px;" @onclick="() => Limpiar()">Limpiar</button> 
+    <button class="btn btn-danger" style="margin-top: 20px;" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+
+@code {
+    private class Operaciones
+    {
+        public decimal[] Numeros { get; set; } = new decimal[6];
+        public string Resultado { get; set; }
+    }
+
+    private Operaciones operaciones = new Operaciones();
+
+    private void Sumar()
+    {
+        operaciones.Resultado = operaciones.Numeros.Sum().ToString();
+    }
+    private void Restar()
+    {
+        operaciones.Resultado = (operaciones.Numeros[0] - operaciones.Numeros[1] - operaciones.Numeros[2] -
+        operaciones.Numeros[3] - operaciones.Numeros[4] - operaciones.Numeros[5]).ToString();
+    }
+    private void Multiplicar()
+    {
+        decimal resultado = operaciones.Numeros[0];
+        for (int i = 1; i < operaciones.Numeros.Length; i++)
+        {
+            resultado *= operaciones.Numeros[i];
+        }
+        operaciones.Resultado = resultado.ToString();
+    }
+
+    private void Dividir()
+    {
+        decimal resultado = operaciones.Numeros[0];
+        for (int i = 1; i < operaciones.Numeros.Length; i++)
+        {
+            resultado /= operaciones.Numeros[i];
+        }
+        operaciones.Resultado = resultado.ToString();
+    }
+
+
+    private void Limpiar()
+    {
+        operaciones = new Operaciones();
+    }
+}

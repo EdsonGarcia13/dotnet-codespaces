@@ -1,0 +1,50 @@
+@page "/"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<PageTitle>home</PageTitle>
+<h1>Registro</h1>
+<EditForm Model="registro" OnValidSubmit="Registrar">
+    <div class="form-group" style="margin-top: 20px;" >
+        <label for="nombreRegistro">Nombre:</label>
+        <InputText id="nombreRegistro" class="form-control" @bind-Value="registro.Nombre" />
+    </div>
+    <div class="form-group">
+        <label for="contrasenaRegistro">Contraseña:</label>
+        <InputText id="contrasenaRegistro" class="form-control" @bind-Value="registro.Contrasena" type="password" />
+        @if (!string.IsNullOrEmpty(registro.Contrasena))
+        {
+            @if (registro.Contrasena == "123contra")
+            {
+                <div class="text-success">Contraseña correcta</div>
+            }
+            else
+            {
+                <div class="text-danger">Contraseña incorrecta</div>
+            }
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Registrar</button>
+</EditForm>
+<img src="1329769.png" alt="exito" style="width: 35%; height: 25%; display: block; margin: 0 auto;" />
+
+
+@code {
+    private class Registro
+    {
+        public string Nombre { get; set; }
+
+        public string Contrasena { get; set; }
+    }
+
+    private Registro registro = new Registro();
+
+    private void Registrar()
+    {
+        if (registro.Contrasena == "123contra")
+        {
+            NavigationManager.NavigateTo("/saludo");
+        }
+    }
+}

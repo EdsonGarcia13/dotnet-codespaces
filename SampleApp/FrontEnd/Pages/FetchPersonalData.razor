@@ -1,0 +1,249 @@
+@page "/personalData"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+@code {
+    private Aspirante aspirante = new Aspirante { FechaNacimiento = DateTime.Now };
+    private void HandleSubmit()
+    {
+        MostrarDatos = true;
+        Mensaje = "Datos guardados correctamente";
+    }
+
+    public string Mensaje { get; set; }
+    public bool MostrarDatos { get; set; }
+
+    public class Aspirante
+    {
+        [Required]
+        public string Nombre { get; set; }
+
+        [Required]
+        public string Apellido { get; set; }
+
+         [Required]
+        public string Direccion { get; set; }
+
+        [Required]
+        public int Edad { get; set; }
+
+        [Required]
+        public DateTime FechaNacimiento { get; set; }
+
+        public string Estado { get; set; }
+        public string Estado2 { get; set; }
+        public string Estado3 { get; set; }
+        public string Estado4 { get; set; }
+        public string? Genero { get; set; }
+        public string? EstadoCivil { get; set; }
+        public string? enfermedad { get; set; }
+        public string? alergia { get; set; }
+        public string? operacion { get; set; }
+        public string? ejercicio { get; set; }
+        public string? depresion { get; set; }
+    }
+
+}
+
+
+<PageTitle>DataPersonal</PageTitle>
+
+<h1>Expediente</h1>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+                <a class="nav-link @(activeTab == "personalData" ? "active" : "")" @onclick='(() => ChangeTab("personalData"))'>Datos Personales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(activeTab == "clinicalData" ? "active" : "")" @onclick='(() => ChangeTab("clinicalData"))'>Datos clínicos</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="form1" class="tab-pane fade show @(activeTab == "personalData" ? "active" : "")">
+            <EditForm Model="aspirante" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="nombre">Nombre:</label>
+                    <InputText id="nombre" class="form-control" @bind-Value="aspirante.Nombre" />
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="nombre">Apellido:</label>
+                    <InputText id="nombre" class="form-control" @bind-Value="aspirante.Apellido" />
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="nombre">Direccion:</label>
+                    <InputText id="nombre" class="form-control" @bind-Value="aspirante.Direccion" />
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                    <InputDate id="fechaNacimiento" class="form-control" @bind-Value="aspirante.FechaNacimiento" />
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="estado">Estado:</label>
+                    <InputSelect id="estado" class="form-control" @bind-Value="aspirante.Estado">
+                        <option value="">Selecciona un estado</option>
+                        @foreach (var state in new string[] { "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua", "Coahuila", "Colima", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas" })
+                        {
+                            <option value="@state">@state</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="form-group">
+                    <label>Sexo:</label>
+                    <InputRadioGroup @bind-Value="aspirante.Genero">
+                        <InputRadio id="masculino" TValue="string" value="Masculino" /> Hombre
+                        <InputRadio id="femenino" TValue="string" value="Femenino" /> Mujer
+                    </InputRadioGroup>
+                </div>
+                @if (aspirante.Genero == "Masculino")
+                {
+                    <div class="form-group">
+                        <label>Estado Civil:</label>
+                        <InputSelect id="estadoCivil" class="form-control" @bind-Value="aspirante.EstadoCivil">
+                            <option value="">Selecciona un estado civil</option>
+                            @foreach (var state in new string[] { "Soltero", "Casado", "Divorciado", "Viudo" })
+                            {
+                                <option value="@state">@state</option>
+                            }
+                        </InputSelect>
+                    </div>
+                }
+                else if (aspirante.Genero == "Femenino")
+                {
+                    <div class="form-group">
+                        <label>Estado Civil:</label>
+                        <InputSelect id="estadoCivil" class="form-control" @bind-Value="aspirante.EstadoCivil">
+                            <option value="">Selecciona un estado civil</option>
+                            @foreach (var state in new string[] { "Soltera", "Casada", "Divorciada", "Viuda" })
+                            {
+                                <option value="@state">@state</option>
+                            }
+                        </InputSelect>
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px;">Guardar</button>
+                <button class="btn btn-danger" style="margin-top: 20px; margin-bottom: 20px;" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+            </EditForm>
+        </div>
+
+        <div id="form2" class="tab-pane fade show @(activeTab == "clinicalData" ? "active" : "")">
+             <EditForm Model="aspirante" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+          
+            <div class="form-group" style="margin-top: 15px;">
+                <div class="form-group" >
+                    <label>¿Padeces de alguna enfermedad?</label>
+                    <InputRadioGroup @bind-Value="aspirante.enfermedad">
+                        <InputRadio id="si" TValue="string" value="si" /> Si
+                        <InputRadio id="no" TValue="string" value="no" /> No
+                    </InputRadioGroup>
+                </div>
+                @if (aspirante.enfermedad == "si")
+                {
+                    <InputSelect id="estado" class="form-control" @bind-Value="aspirante.Estado">
+                        <option value="">Selecciona una</option>
+                        @foreach (var state in new string[] {"tos", "gripe", "fiebre", "dolor de cabeza", "dolor de estomago", "dolor de garganta", "dolor de cuerpo", "dolor de espalda", "dolor de piernas", "dolor de brazos", "dolor de rodillas", "dolor de cadera", "dolor de manos", "dolor de pies", "dolor de cuello", "dolor de oidos", "dolor de ojos", "dolor de nariz", "dolor de boca", "dolor de dientes", "dolor de encias", "dolor de lengua", "dolor de labios", "dolor de mejillas", "dolor de frente", "dolor de menton", "dolor de nuca", "dolor de cabeza", "dolor de cuello", "dolor de espalda", "dolor de cintura", "dolor de cadera", "dolor de piernas", "dolor de rodillas", "dolor de tobillos", "dolor de pies", "dolor de manos", "dolor de muñecas", "dolor de dedos", "dolor de brazos", "dolor de hombros", "dolor de codos", "dolor de axilas", "dolor de pecho", "dolor de espalda", "dolor de abdomen", "dolor de cintura", "dolor de cadera", "dolor de piernas", "dolor de rodillas", "dolor de tobillos", "dolor de pies", "dolor de manos", "dolor de muñecas", "dolor de dedos", "dolor de brazos", "dolor de hombros", "dolor de codos", "dolor de axilas", "dolor de pecho", "dolor de espalda", "dolor de abdomen", "dolor de cintura", "dolor de cadera", "dolor de piernas", "dolor de rodillas", "dolor de tobillos", "dolor de pies", "dolor de manos", "dolor de muñecas", "dolor de dedos", "dolor de brazos"})
+                        {
+                            <option value="@state">@state</option>
+                        }
+                    </InputSelect>
+                }
+            </div>
+                <div class="form-group1" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>¿Tienes alergias?</label>
+                    <InputRadioGroup @bind-Value="aspirante.alergia">
+                        <InputRadio id="si" TValue="string" value="si" /> Si
+                        <InputRadio id="no" TValue="string" value="no" /> No
+                    </InputRadioGroup>
+                </div>
+                 @if (aspirante.alergia == "si")
+                {
+                    <InputSelect id="estado2" class="form-control" @bind-Value="aspirante.Estado2">
+                        <option value="">Selecciona una</option>
+                        @foreach (var state in new string[] {"polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen", "polvo", "acaros", "alimentos", "medicamentos", "animales", "insectos", "metales", "productos quimicos", "cosmeticos", "plantas", "telas", "plasticos", "lana", "pelo", "humo", "polen"})
+                        {
+                            <option value="@state">@state</option>
+                        }
+                    </InputSelect>
+                }
+                </div>
+       <div class="form-group" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>¿Alguna vez te han operado?</label>
+                    <InputRadioGroup @bind-Value="aspirante.operacion">
+                        <InputRadio id="si" TValue="string" value="si" /> Si
+                        <InputRadio id="no" TValue="string" value="no" /> No
+                    </InputRadioGroup>
+                </div>
+                 @if (aspirante.operacion == "si")
+                {
+                    <InputSelect id="estado3" class="form-control" @bind-Value="aspirante.Estado3">
+                        <option value="">Selecciona una</option>
+                        @foreach (var state in new string[] {"apendicitis", "cesarea", "hernia", "vesicula", "nariz", "ojos", "boca", "dientes", "muela", "cabeza", "cuello", "espalda", "cintura", "cadera", "piernas", "rodillas", "tobillos", "pies", "manos", "muñecas", "dedos", "brazos", "hombros", "codos", "axilas", "pecho", "abdomen", "cintura", "cadera", "piernas", "rodillas", "tobillos", "pies", "manos", "muñecas", "dedos", "brazos", "hombros", "codos", "axilas", "pecho", "abdomen", "cintura", "cadera", "piernas", "rodillas"})
+                        {
+                            <option value="@state">@state</option>
+                        }
+                    </InputSelect>
+                }
+                </div>
+
+    <div class="form-group" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>¿Haces ejercicio?</label>
+                    <InputRadioGroup @bind-Value="aspirante.ejercicio">
+                        <InputRadio id="si" TValue="string" value="si" /> Si
+                        <InputRadio id="no" TValue="string" value="no" /> No
+                    </InputRadioGroup>
+                </div>
+                 @if (aspirante.ejercicio == "si")
+                {
+                    <InputSelect id="estado4" class="form-control" @bind-Value="aspirante.Estado4">
+                        <option value="">Selecciona una</option>
+                        @foreach (var state in new string[] {"futbol", "basquetbol", "beisbol", "natacion", "atletismo", "ciclismo", "gimnasia", "yoga", "karate", "taekwondo", "box", "pesas", "caminata"})
+                        {
+                            <option value="@state">@state</option>
+                        }
+                    </InputSelect>
+                }
+                </div>
+                <div class="form-group">
+                    <label>¿Padeces de depresión?</label>
+                    <InputRadioGroup @bind-Value="aspirante.depresion">
+                        <InputRadio id="si" TValue="string" value="si" /> Si
+                        <InputRadio id="no" TValue="string" value="no" /> No
+                    </InputRadioGroup>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px;">Guardar</button>
+                <button class="btn btn-danger" style="margin-top: 20px; margin-bottom: 20px;" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private string activeTab = "personalData";
+
+    private void ChangeTab(string tab)
+    {
+        activeTab = tab;
+    }
+
+}
+
+
+
+@if (!string.IsNullOrEmpty(Mensaje))
+{
+    <p>@Mensaje</p>
+}
+
+@if (MostrarDatos)
+{
+    <p>Nombre: @aspirante.Nombre</p>
+    <p>Edad: @aspirante.Edad</p>
+    <p>Fecha de Nacimiento: @aspirante.FechaNacimiento.ToShortDateString()</p>
+}

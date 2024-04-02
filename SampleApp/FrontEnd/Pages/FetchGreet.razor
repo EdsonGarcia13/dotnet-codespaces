@@ -1,0 +1,39 @@
+@page "/saludo"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+@code {
+    private Aspirante aspirante = new Aspirante();
+    private void HandleSubmit()
+    {
+        Mensaje = $"Hola {aspirante.Nombre}, ¿Qué tal va tu dia?  ";
+    }
+
+    public string Mensaje { get; set; }
+    public class Aspirante
+    {
+        public string Nombre { get; set; }
+    }
+
+}
+
+
+<PageTitle>Saludo</PageTitle>
+
+<EditForm Model="aspirante" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group" style="margin-top: 35px;">
+        <label for="nombre">Ingresar nombre:</label>
+        <InputText id="nombre" class="form-control" @bind-Value="aspirante.Nombre" />
+    </div>
+<button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px;">Saludar</button>
+
+</EditForm>
+
+
+@if (!string.IsNullOrEmpty(Mensaje))
+{
+    <p>@Mensaje</p>
+}
+
+<img src="foxSlayer.jpeg" alt="exito" style="width: 22%; height: 22%; display: block; margin: 0 auto;" />

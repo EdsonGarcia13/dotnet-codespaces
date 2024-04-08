@@ -1,0 +1,99 @@
+@page "/registroProveedor"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+<PageTitle>Registro de proveedor</PageTitle>
+
+<h3>Registrar proveedor</h3>
+
+<EditForm Model="nuevoProveedor" OnValidSubmit="RegistrarProducto" class="mb-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="codigo" @bind-Value="nuevoProveedor.Codigo" placeholder="NIF" required class="form-control mb-2" />
+    <InputText id="nombre" @bind-Value="nuevoProveedor.Nombre" placeholder="Nombre" required class="form-control mb-2" />
+    <InputText id="precio" @bind-Value="nuevoProveedor.Domicilio" placeholder="Direccion" required class="form-control mb-2" />
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+    <button type="button" @onclick="LimpiarFormulario" class="btn btn-secondary">Limpiar</button>
+
+</EditForm>
+
+<h3>Productos Registrados</h3>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Codigo</th>
+            <th>Nombre</th>
+            <th>Domicilio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proveedor in proveedores)
+        {
+            <tr>
+                <td>@proveedor.Codigo</td>
+                <td>@proveedor.Nombre</td>
+                <td>@proveedor.Domicilio</td>
+                <td>
+                    <button @onclick="() => EditarProducto(proveedor)" class="btn btn-warning">Editar</button>
+                    <button @onclick="() => BorrarProducto(proveedor)" class="btn btn-danger">Borrar</button>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+    <button class="btn btn-danger" style="margin-top: 20px;" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+
+
+@code {
+ protected override void OnInitialized()
+    {
+        proveedores = new List<Proveedor>
+        {
+            new Proveedor { Codigo = "P1", Nombre = "Proveedor 1", Domicilio = "direccion" },
+            new Proveedor { Codigo = "P2", Nombre = "Proveedor 2", Domicilio = "direccion"},
+            new Proveedor { Codigo = "P3", Nombre = "Proveedor 3", Domicilio = "direccion"},
+            new Proveedor { Codigo = "P4", Nombre = "Proveedor 4", Domicilio = "direccion"},
+            new Proveedor { Codigo = "P5", Nombre = "Proveedor 5", Domicilio = "direccion"}
+        };
+    }
+public class Proveedor
+    {
+        public string Codigo { get; set; }
+        public string Nombre { get; set; }
+        public string Domicilio { get; set; }
+    }
+ private Proveedor nuevoProveedor = new Proveedor();
+    private List<Proveedor> proveedores;
+private void LimpiarFormulario()
+    {
+        nuevoProveedor = new Proveedor();
+    }
+     private async Task RegistrarProducto()
+    {
+        if (proveedores.Any(p => p.Codigo == nuevoProveedor.Codigo))
+        {
+            Console.WriteLine("Error: El código ya está registrado.");
+            return;
+        }
+
+        proveedores.Add(nuevoProveedor);
+        nuevoProveedor = new Proveedor();
+    }
+    private void EditarProducto(Proveedor proveedor)
+    {
+        nuevoProveedor = proveedor;
+    }
+
+    private void BorrarProducto(Proveedor proveedor)
+    {
+        proveedores.Remove(proveedor);
+    }
+
+}

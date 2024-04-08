@@ -1,0 +1,111 @@
+@page "/registroProduct"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+<PageTitle>Registro de producto</PageTitle>
+
+<h3>Registrar Producto</h3>
+
+<EditForm Model="nuevoProducto" OnValidSubmit="RegistrarProducto" class="mb-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="codigo" @bind-Value="nuevoProducto.Codigo" placeholder="Codigo" required class="form-control mb-2" />
+    <InputText id="nombre" @bind-Value="nuevoProducto.Nombre" placeholder="Nombre" required class="form-control mb-2" />
+    <InputText id="precio" @bind-Value="precioTexto" placeholder="Precio" required class="form-control mb-2" />
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+    <button type="button" @onclick="LimpiarFormulario" class="btn btn-secondary">Limpiar</button>
+    <button class="btn btn-danger" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+
+
+</EditForm>
+
+<h3>Productos Registrados</h3>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Codigo</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var producto in productos)
+        {
+            <tr>
+                <td>@producto.Codigo</td>
+                <td>@producto.Nombre</td>
+                <td>@producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-MX"))</td>
+                <td>
+                    <button @onclick="() => EditarProducto(producto)" class="btn btn-warning">Editar</button>
+                    <button @onclick="() => BorrarProducto(producto)" class="btn btn-danger">Borrar</button>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private string precioTexto
+{
+    get => nuevoProducto.Precio.ToString("F2");
+    set
+    {
+        if (decimal.TryParse(value, out var precio))
+        {
+            nuevoProducto.Precio = precio;
+        }
+    }
+}
+ protected override void OnInitialized()
+    {
+        productos = new List<Producto>
+        {
+            new Producto { Codigo = "P1", Nombre = "Producto 1", Precio = 10.99M },
+            new Producto { Codigo = "P2", Nombre = "Producto 2", Precio = 20.99M },
+            new Producto { Codigo = "P3", Nombre = "Producto 3", Precio = 30.99M },
+            new Producto { Codigo = "P4", Nombre = "Producto 4", Precio = 40.99M },
+            new Producto { Codigo = "P5", Nombre = "Producto 5", Precio = 50.99M }
+        };
+    }
+public class Producto
+    {
+        public string Codigo { get; set; }
+        public string Nombre { get; set; }
+        public decimal Precio { get; set; }
+    }
+ private Producto nuevoProducto = new Producto();
+    private List<Producto> productos;
+private void LimpiarFormulario()
+    {
+        nuevoProducto = new Producto();
+    }
+     private async Task RegistrarProducto()
+    {
+        if (productos.Any(p => p.Codigo == nuevoProducto.Codigo))
+        {
+            Console.WriteLine("Error: El código ya está registrado.");
+            return;
+        }
+
+        productos.Add(nuevoProducto);
+        nuevoProducto = new Producto();
+    }
+    private void EditarProducto(Producto producto)
+    {
+        nuevoProducto = producto;
+    }
+
+    private void BorrarProducto(Producto producto)
+    {
+        productos.Remove(producto);
+    }
+
+}

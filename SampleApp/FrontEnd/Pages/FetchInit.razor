@@ -1,0 +1,50 @@
+@page "/saludo"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+@code {
+    private string nombre = "";
+    private string apellido = "";
+    private string email = "";
+    private string mensaje = "";
+    private bool enviado = false;
+
+    private void EnviarMensaje()
+    {
+        enviado = true;
+    }
+
+}
+
+
+<PageTitle>Bienvenido a nuestra zapatería</PageTitle>
+
+<section class="jumbotron text-center" style="margin-top: 35px;">
+    <div class="container">
+        <h1 class="jumbotron-heading">Bienvenido a nuestra zapatería</h1>
+        <p class="lead text-muted">Ofrecemos una amplia variedad de zapatos de alta calidad para todas las ocasiones. ¡Explora nuestra colección y encuentra el par perfecto para ti!</p>
+    </div>
+</section>
+
+<section class="text-center" style="margin-top: 35px;">
+    <div class="container">
+        <h2>¿Quiénes somos?</h2>
+        <p>Somos una empresa dedicada a la venta de zapatos de alta calidad. Con años de experiencia en la industria, nos enorgullece ofrecer a nuestros clientes productos duraderos y cómodos que se adaptan a cualquier estilo de vida.</p>
+    </div>
+</section>
+
+<section class="text-center" style="margin-top: 35px;">
+    <div class="container">
+        <h2>Misión</h2>
+        <p>Nuestra misión es proporcionar a nuestros clientes zapatos de alta calidad a precios asequibles. Nos esforzamos por ofrecer un excelente servicio al cliente y una experiencia de compra inigualable.</p>
+    </div>
+</section>
+
+<section class="text-center" style="margin-top: 35px;">
+    <div class="container">
+        <h2>Visión</h2>
+        <p>Nuestra visión es ser reconocidos como la principal zapatería en nuestra región, conocidos por la calidad de nuestros productos y nuestro compromiso con la satisfacción del cliente.</p>
+    </div>
+</section>
+
+<img src="foxSlayer.jpeg" alt="exito" style="width: 22%; height: 22%; display: block; margin: 0 auto;" />

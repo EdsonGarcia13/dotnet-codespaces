@@ -1,0 +1,111 @@
+@page "/registro"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+<PageTitle>Registro de clientes</PageTitle>
+
+<h3>Registrar Cliente</h3>
+
+<EditForm Model="nuevoCliente" OnValidSubmit="RegistrarCliente" class="mb-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="nombre" @bind-Value="nuevoCliente.Nombre" placeholder="Nombre" required class="form-control mb-2" />
+    <InputText id="apellidos" @bind-Value="nuevoCliente.Apellidos" placeholder="Apellidos" required class="form-control mb-2" />
+    <InputText id="dni" @bind-Value="nuevoCliente.DNI" placeholder="DNI" required class="form-control mb-2" />
+    <InputText id="telefono" @bind-Value="nuevoCliente.Telefono" placeholder="Telefono" required class="form-control mb-2" />
+    <InputDate id="fechaNacimiento" @bind-Value="nuevoCliente.FechaNacimiento" placeholder="Fecha de Nacimiento" required class="form-control mb-2" />
+    <InputText id="correo" @bind-Value="nuevoCliente.Correo" placeholder="Correo" required class="form-control mb-2" />
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+    <button type="button" @onclick="LimpiarFormulario" class="btn btn-secondary">Limpiar</button>
+
+</EditForm>
+
+<h3>Clientes Registrados</h3>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>DNI</th>
+            <th>Telefono</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cliente in clientes)
+        {
+            <tr>
+                <td>@cliente.Nombre</td>
+                <td>@cliente.Apellidos</td>
+                <td>@cliente.DNI</td>
+                <td>@cliente.Telefono</td>
+                <td>@cliente.FechaNacimiento.ToShortDateString()</td>
+                <td>@cliente.Correo</td>
+                <td>
+                    <button @onclick="() => EditarCliente(cliente)" class="btn btn-warning">Editar</button>
+                    <button @onclick="() => BorrarCliente(cliente)" class="btn btn-danger">Borrar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+    <button class="btn btn-danger" style="margin-top: 20px;" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+
+
+@code {
+    private Cliente nuevoCliente = new Cliente();
+    private List<Cliente> clientes = new List<Cliente>();
+        protected override void OnInitialized()
+{
+    clientes = new List<Cliente>
+    {
+        new Cliente { Nombre = "Cliente 1", Apellidos = "Apellido 1", DNI = "12345678A", Telefono = "123456789", FechaNacimiento = new DateTime(1980, 1, 1), Correo = "cliente1@example.com" },
+        new Cliente { Nombre = "Cliente 2", Apellidos = "Apellido 2", DNI = "23456789B", Telefono = "234567890", FechaNacimiento = new DateTime(1981, 2, 2), Correo = "cliente2@example.com" },
+        new Cliente { Nombre = "Cliente 3", Apellidos = "Apellido 3", DNI = "34567890C", Telefono = "345678901", FechaNacimiento = new DateTime(1982, 3, 3), Correo = "cliente3@example.com" },
+        new Cliente { Nombre = "Cliente 4", Apellidos = "Apellido 4", DNI = "45678901D", Telefono = "456789012", FechaNacimiento = new DateTime(1983, 4, 4), Correo = "cliente4@example.com" },
+        new Cliente { Nombre = "Cliente 5", Apellidos = "Apellido 5", DNI = "56789012E", Telefono = "567890123", FechaNacimiento = new DateTime(1984, 5, 5), Correo = "cliente5@example.com" }
+    };
+}
+private void LimpiarFormulario()
+    {
+        nuevoCliente = new Cliente(); // Resetea el formulario
+    }
+    private void RegistrarCliente()
+    {
+        if (clientes.Any(c => c.DNI == nuevoCliente.DNI))
+        {
+            Console.WriteLine("Error: El DNI ya está registrado.");
+            return;
+        }
+
+        clientes.Add(nuevoCliente);
+        nuevoCliente = new Cliente();
+    }
+
+    private void EditarCliente(Cliente cliente)
+    {
+        nuevoCliente = cliente;
+    }
+
+    private void BorrarCliente(Cliente cliente)
+    {
+        clientes.Remove(cliente);
+    }
+
+    public class Cliente
+    {
+        public string Nombre { get; set; }
+        public string Apellidos { get; set; }
+        public string DNI { get; set; }
+        public string Telefono { get; set; }
+        public DateTime FechaNacimiento { get; set; } = DateTime.Today;
+        public string Correo { get; set; }
+    }
+}

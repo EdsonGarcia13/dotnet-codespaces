@@ -1,0 +1,140 @@
+@page "/compra"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Realizar compra</PageTitle>
+
+<h3>Realizar compra</h3>
+
+<EditForm Model="nuevaCompra" OnValidSubmit="RegistrarCompra" class="mb-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="id" @bind-Value="nuevaCompra.Id" placeholder="Numero ticket" required class="form-control mb-2" />
+    <InputText id="cliente" @bind-Value="nuevaCompra.Cliente" placeholder="Cliente" required class="form-control mb-2" />
+
+    <h4>Seleccionar Productos</h4>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th></th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in productos)
+            {
+                <tr>
+                    <td><InputCheckbox @bind-Value="producto.Seleccionado" /></td>
+                    <td>@producto.Codigo</td>
+                    <td>@producto.Nombre</td>
+                    <td>@producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-MX"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+    <button type="button" @onclick="LimpiarFormulario" class="btn btn-secondary">Limpiar</button>
+    <button class="btn btn-danger" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+
+</EditForm>
+
+<h3>Compras Registradas</h3>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var compra in compras)
+        {
+            <tr>
+                <td>@compra.Id</td>
+                <td>@compra.Cliente</td>
+                <td>@string.Join(", ", compra.Productos.Select(p => p.Nombre))</td>
+                <td>
+                    <button @onclick="() => EditarCompra(compra)" class="btn btn-warning">Editar</button>
+                    <button @onclick="() => BorrarCompra(compra)" class="btn btn-danger">Borrar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Compra nuevaCompra = new Compra();
+    private List<Compra> compras = new List<Compra>();
+    private List<Producto> productos = new List<Producto>
+    {
+        new Producto { Codigo = "P1", Nombre = "Producto 1", Precio = 10.99M },
+        new Producto { Codigo = "P2", Nombre = "Producto 2", Precio = 20.99M },
+        new Producto { Codigo = "P3", Nombre = "Producto 3", Precio = 30.99M },
+        new Producto { Codigo = "P4", Nombre = "Producto 4", Precio = 40.99M },
+        new Producto { Codigo = "P5", Nombre = "Producto 5", Precio = 50.99M }
+    };
+ protected override void OnInitialized()
+    {
+        compras = new List<Compra>
+        {
+            new Compra { Id = "1", Cliente = "Cliente 1", Productos = new List<Producto> { productos[0], productos[1] } },
+            new Compra { Id = "2", Cliente = "Cliente 2", Productos = new List<Producto> { productos[2], productos[3] } },
+            new Compra { Id = "3", Cliente = "Cliente 3", Productos = new List<Producto> { productos[1], productos[4] } }
+        };
+    }
+    private void RegistrarCompra()
+    {
+        if (compras.Any(c => c.Id == nuevaCompra.Id))
+        {
+            Console.WriteLine("Error: El ID ya está registrado.");
+            return;
+        }
+
+        nuevaCompra.Productos = productos.Where(p => p.Seleccionado).ToList();
+        compras.Add(new Compra { Id = nuevaCompra.Id, Cliente = nuevaCompra.Cliente, Productos = nuevaCompra.Productos });
+        nuevaCompra = new Compra();
+        productos.ForEach(p => p.Seleccionado = false);
+    }
+
+    private void EditarCompra(Compra compra)
+    {
+        nuevaCompra = compra;
+        productos.ForEach(p => p.Seleccionado = nuevaCompra.Productos.Contains(p));
+    }
+
+    private void BorrarCompra(Compra compra)
+    {
+        compras.Remove(compra);
+    }
+
+    private void LimpiarFormulario()
+    {
+        nuevaCompra = new Compra();
+        productos.ForEach(p => p.Seleccionado = false);
+    }
+
+    public class Compra
+    {
+        public string Id { get; set; }
+        public string Cliente { get; set; }
+        public List<Producto> Productos { get; set; }
+    }
+
+    public class Producto
+    {
+        public string Codigo { get; set; }
+        public string Nombre { get; set; }
+        public decimal Precio { get; set; }
+        public bool Seleccionado { get; set; }
+    }
+}

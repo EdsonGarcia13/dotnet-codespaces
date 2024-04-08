@@ -1,0 +1,104 @@
+@page "/productos"
+@using FrontEnd.Data
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+@inject NavigationManager NavigationManager
+
+<PageTitle>Productos</PageTitle>
+
+<h3>Productos</h3>
+
+<label style="margin-top: 15px;">
+    <input type="checkbox" @onchange="MostrarMasculinoChanged" /> Mostrar productos masculinos
+</label>
+<label style="margin-top: 15px;">
+    <input type="checkbox" @onchange="MostrarFemeninoChanged" /> Mostrar productos femeninos
+</label>
+
+<table class="table" style="margin-top: 15px;">
+    <thead>
+        <tr>
+            <th>Seleccionar</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Tallas</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var producto in productosFiltrados)
+        {
+            <tr>
+                <td><input type="checkbox" @bind="producto.IsSelected" /></td>
+                <td>@producto.Nombre</td>
+                <td>@producto.Sexo</td>
+                <td>@string.Join(", ", producto.Tallas)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+    <button class="btn btn-danger" style="margin-top: 20px;" onclick="@(() => NavigationManager.NavigateTo("/saludo"))">Regresar</button>
+
+
+@code {
+    private bool MostrarMasculino = false;
+    private bool MostrarFemenino = false;
+    private List<Producto> productos;
+    private List<Producto> productosFiltrados;
+
+    protected override void OnInitialized()
+    {
+        // Aquí es donde cargarías tus productos desde el JSON
+        // Para este ejemplo, solo estoy creando algunos productos de prueba
+        productos = new List<Producto>
+        {
+            new Producto { Nombre = "zapatillas", Sexo = "Dama", Tallas = new List<decimal> { 21 }, IsSelected = false },
+            new Producto { Nombre = "zapatillas", Sexo = "Dama", Tallas = new List<decimal> { 22 }, IsSelected = false },
+            new Producto { Nombre = "zapatillas", Sexo = "Dama", Tallas = new List<decimal> { 23 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Dama", Tallas = new List<decimal> { 24 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Dama", Tallas = new List<decimal> { 25 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Dama", Tallas = new List<decimal> { 25 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Dama", Tallas = new List<decimal> { 26 }, IsSelected = false },
+            new Producto { Nombre = "sandalias", Sexo = "Dama", Tallas = new List<decimal> { 27 }, IsSelected = false },
+            new Producto { Nombre = "sandalias", Sexo = "Dama", Tallas = new List<decimal> { 27 }, IsSelected = false },
+            new Producto { Nombre = "sandalias", Sexo = "Dama", Tallas = new List<decimal> { 24 }, IsSelected = false },
+            new Producto { Nombre = "tenis", Sexo = "Caballero", Tallas = new List<decimal> { 24 }, IsSelected = false },
+            new Producto { Nombre = "tenis", Sexo = "Caballero", Tallas = new List<decimal> { 25 }, IsSelected = false },
+            new Producto { Nombre = "tenis", Sexo = "Caballero", Tallas = new List<decimal> { 26 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Caballero", Tallas = new List<decimal> { 27 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Caballero", Tallas = new List<decimal> { 28 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Caballero", Tallas = new List<decimal> { 29 }, IsSelected = false },
+            new Producto { Nombre = "zapato", Sexo = "Caballero", Tallas = new List<decimal> { 30 }, IsSelected = false },
+            new Producto { Nombre = "bota", Sexo = "Caballero", Tallas = new List<decimal> { 28 }, IsSelected = false },
+            new Producto { Nombre = "bota", Sexo = "Caballero", Tallas = new List<decimal> { 29 }, IsSelected = false },
+            new Producto { Nombre = "sandalias", Sexo = "Caballero", Tallas = new List<decimal> { 30 }, IsSelected = false },
+        };
+
+        FiltrarProductos();
+    }
+
+    private void FiltrarProductos()
+    {
+        productosFiltrados = productos.Where(p => (MostrarMasculino && p.Sexo == "Caballero") || (MostrarFemenino && p.Sexo == "Dama")).ToList();
+    }
+
+
+    private void MostrarMasculinoChanged(ChangeEventArgs e)
+    {
+        MostrarMasculino = (bool)e.Value;
+        FiltrarProductos();
+    }
+
+    private void MostrarFemeninoChanged(ChangeEventArgs e)
+    {
+        MostrarFemenino = (bool)e.Value;
+        FiltrarProductos();
+    }
+
+    public class Producto
+    {
+        public string Nombre { get; set; }
+        public string Sexo { get; set; }
+        public List<decimal> Tallas { get; set; }
+        public bool IsSelected { get; set; }
+    }
+}
